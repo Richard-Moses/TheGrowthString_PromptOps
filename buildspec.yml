@@ -1,0 +1,40 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+      - apt-get update && apt-get install -y awscli
+      - echo "Installing Docker..."
+      - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      - echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      - apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+      - systemctl enable docker
+      - echo "Docker installation complete."
+      - echo "Pulling the Docker image..."
+      - docker pull mosesr/tgsweb
+      - echo "Docker image pulled successfully."
+  pre_build:
+    commands:
+      - echo "Setting up AWS credentials..."
+      - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+      - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+      - aws configure set region $AWS_DEFAULT_REGION
+      - echo "AWS credentials set up."
+      - echo "Decrypting the Docker Hub password from Parameter Store..."
+      - dockerpassword=$(aws ssm get-parameter --name /dockerhub/password --with-decryption --query Parameter.Value --output text)
+      - echo "Docker Hub password decrypted."
+  build:
+    commands:
+      - echo "Building the Docker image..."
+      - docker build -t tgsweb .
+      - echo "Docker image built successfully."
+  post_build:
+    commands:
+      - echo "Pushing the Docker image to Docker Hub..."
+      - docker login -u mosesr -p $dockerpassword
+      - docker tag tgsweb mosesr/tgsweb
+      - docker push mosesr/tgsweb
+      - echo "Docker image pushed successfully."
+artifacts:
+  files:
+    - tgsweb*.tar

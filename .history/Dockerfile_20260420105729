@@ -1,0 +1,33 @@
+The error message you encountered indicates that the Docker image you are building is missing the required `Name` label. The `Name` label is a recommended practice for providing a meaningful name for your Docker image.
+
+To resolve this issue, you can add a `LABEL` instruction to your Dockerfile to define the `Name` label. Here's an updated version of the Dockerfile with the `Name` label added:
+
+```Dockerfile
+# Use the official Python base image
+FROM python:3.9
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements.txt file to the container
+COPY requirements.txt .
+
+# Install the Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code to the container
+COPY . .
+
+# Expose the port that the Flask application will be running on
+EXPOSE 5000
+
+# Set the command to run when the container starts
+CMD ["python", "app.py"]
+
+# Add the Name label
+LABEL Name=tgsweb
+```
+
+In this example, the `LABEL` instruction is added at the end of the Dockerfile to set the `Name` label to `tgsweb`. You can replace `tgsweb` with the desired name for your Docker image.
+
+After adding the `LABEL` instruction, rebuild your Docker image and push it to Docker Hub. The image should now have the required `Name` label defined.

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arithmetic Calculator</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; }
+      form { max-width: 400px; }
+      input, select, button { width: 100%; padding: 0.75rem; margin: 0.5rem 0; }
+      .result, .error { margin-top: 1rem; padding: 1rem; border-radius: 6px; }
+      .result { background: #e7f7e7; color: #085e14; }
+      .error { background: #fde8e8; color: #841515; }
+    </style>
+  </head>
+  <body>
+    <h1>Arithmetic Calculator</h1>
+    <form method="post">
+      <label for="a">Number A</label>
+      <input type="text" id="a" name="a" value="{{ values.a }}" placeholder="Enter first number" required>
+
+      <label for="b">Number B</label>
+      <input type="text" id="b" name="b" value="{{ values.b }}" placeholder="Enter second number" required>
+
+      <label for="operation">Operation</label>
+      <select id="operation" name="operation">
+        <option value="add" {% if values.operation == 'add' %}selected{% endif %}>Add</option>
+        <option value="subtract" {% if values.operation == 'subtract' %}selected{% endif %}>Subtract</option>
+        <option value="multiply" {% if values.operation == 'multiply' %}selected{% endif %}>Multiply</option>
+        <option value="divide" {% if values.operation == 'divide' %}selected{% endif %}>Divide</option>
+      </select>
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    {% if result is not none %}
+      <div class="result">
+        <strong>Result:</strong> {{ result }}
+      </div>
+    {% endif %}
+
+    {% if error %}
+      <div class="error">
+        <strong>Error:</strong> {{ error }}
+      </div>
+    {% endif %}
+  </body>
+</html>

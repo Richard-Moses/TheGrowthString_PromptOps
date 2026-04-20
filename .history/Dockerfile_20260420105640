@@ -1,0 +1,2 @@
+[dockerfile-validator] Required LABEL name/key 'Name' is not defined
+	http://docs.projectatomic.io/container-best-practices/#_recommended_labels_for_your_project
