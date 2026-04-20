@@ -1,0 +1,12 @@
+post_build:
+  commands:
+    - echo "Pushing the Docker image to GitHub..."
+    - git config --global user.name "Richard-Moses"
+    - git config --global user.email "vanmoses77@gmail.com"
+    - git clone --single-branch --branch gh-pages https://github.com/Richard-Moses/TheGrowthString_PromptOps.git
+    - cd TheGrowthString_PromptOps
+    - git remote set-url origin https://$githubpassword@github.com/Richard-Moses/TheGrowthString_PromptOps.git
+    - git add .
+    - git commit -m "Your commit message"
+    - git push origin gh-pages
+    - echo "Docker image pushed successfully."
